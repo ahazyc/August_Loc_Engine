@@ -1,5 +1,18 @@
 @import '~antd/dist/antd.css';
 
+#map {
+  height: 500px;
+  width: 100%;
+}
+
+.findMe {
+  background-color: rgb(255, 255, 255);
+  color:rgb(0, 0, 0);
+  font-size: medium;
+  border-radius: 5px;
+  height: 40px;
+  margin: 10px;
+}
 .headerBand {
     color: white;
 }

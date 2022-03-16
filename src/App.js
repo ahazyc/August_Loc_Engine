@@ -6,8 +6,7 @@ import { EditOutlined, EllipsisOutlined, SettingOutlined, } from '@ant-design/ic
 // import SimpleMap from './components/Map/Map'
 import Head from './components/Header/Head'
 import ListTable from './components/List/List';
-import Main from './pages/Main'
-import GoogleMap from './components/Map/Map';
+import Map from './components/Map/Map';
 
 const { Header, Footer } = Layout;
 const { Title, Link } = Typography;
@@ -39,30 +38,14 @@ const App = () => {
               <ListTable />
             </Card>
           </Col>
-
-
-
-
-
-
-          <Col span={14} id="map"></Col>
-
-
-
-
-
-
-
-
-
-
+          <Col span={14}><Map lat={50} lng={50} /></Col>
         </Row>
         <Footer></Footer>
       </Layout>
     </>
   )
 }
-
+<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyCDnt3zhAcYQGXU5YPlUTB-cNT9V7g62AA"></script>
 export default App;
 
 
