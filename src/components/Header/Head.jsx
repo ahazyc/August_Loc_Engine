@@ -15,9 +15,7 @@ const Head = () => {
                         August Location Engine
                     </h1>
                 </Col>
-                <Col span={8} offset={8}>
-                    <Search className="searchBar1" placeholder="Enter a place" onSearch={onSearch} enterButton />
-                </Col>
+                
 
             </Row>
         </Header>
