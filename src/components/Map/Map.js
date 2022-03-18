@@ -9,10 +9,15 @@ import GoogleMapReact from 'google-map-react';
 let GeolocationPosition = null;
 let infowindow = null
 let map = null
-console.log(window.google.maps)
+
 
 export default class Map extends React.Component {
-
+  constructor(props) {
+    super(props)
+    this.state = {
+      currentAddress: this.currentAddress
+    }
+  }
   componentDidMount() {
     this.componentDidUpdate()
   }
@@ -26,7 +31,7 @@ export default class Map extends React.Component {
     this.lastLng = this.props.lng;
     var google = window.google;
     const map = new google.maps.Map(document.getElementById("map"), {
-      
+
       zoom: 4,
       center: {
         lat: this.props.lat,
@@ -39,45 +44,39 @@ export default class Map extends React.Component {
     //search box
     const input = document.getElementById("pac-input");
     const searchBox = new google.maps.places.SearchBox(input);
-    
-    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-    // Bias the SearchBox results towards current map's viewport.
+
     map.addListener("bounds_changed", () => {
       searchBox.setBounds(map.getBounds());
     });
-    console.log('OK')
-    let markers = google.maps.Marker = [];
+    let markers = [];
+    
+    ////
+    ////
 
     searchBox.addListener("places_changed", () => {
       const places = searchBox.getPlaces();
-  
+
+
+     
+
+
       if (places.length == 0) {
         return;
       }
-  
-      // Clear out the old markers.
-      markers.forEach((marker) => {
-        marker.setMap(null);
-      });
-      markers = [];
-      markers.push(
-      new google.maps.Marker({
-        map,
-        position: {
-              lat: this.props.lat,
-              lng: this.props.lng
-            }
-      })
-    )
+
+      // markers.forEach((marker) => {
+      //   marker.setMap(null);
+      // });
+
       // For each place, get the icon, name and location.
       const bounds = new google.maps.LatLngBounds();
-  
+
       places.forEach((place) => {
         if (!place.geometry || !place.geometry.location) {
           console.log("Returned place contains no geometry");
           return;
         }
-  
+
         const icon = {
           url: place.icon,
           size: new google.maps.Size(71, 71),
@@ -85,7 +84,7 @@ export default class Map extends React.Component {
           anchor: new google.maps.Point(17, 34),
           scaledSize: new google.maps.Size(25, 25),
         };
-  
+
         // Create a marker for each place.
         markers.push(
           new google.maps.Marker({
@@ -95,32 +94,25 @@ export default class Map extends React.Component {
             position: place.geometry.location,
           })
         );
-  
+        
+         //pass address to APP
+        const currentAddress = places[0].formatted_address
+        this.props.cFn(currentAddress)
+
         if (place.geometry.viewport) {
-          // Only geocodes have viewport.
           bounds.union(place.geometry.viewport);
         } else {
           bounds.extend(place.geometry.location);
         }
       });
       map.fitBounds(bounds);
+      
     });
+    
 
     ///////////////////////
     //Show my current
     const infoWindow = new google.maps.InfoWindow();
-
-    console.log('OK')
-
-    
-    // var marker = new google.maps.Marker({
-    //   position: {
-    //     lat: this.props.lat,
-    //     lng: this.props.lng
-    //   },
-    //   map: map
-    // })
-
     const locationButton = document.createElement("button");
 
     locationButton.textContent = "Check your current Location";
@@ -137,7 +129,6 @@ export default class Map extends React.Component {
               lng: position.coords.longitude,
             };
 
-
             infoWindow.setPosition(pos);
             infoWindow.setContent('You are here!');
             infoWindow.open(map);
@@ -152,7 +143,9 @@ export default class Map extends React.Component {
         handleLocationError(false, infoWindow, map.getCenter())
       }
     })
+    
   }
+
   ///////////////////////
   //Show my current
 

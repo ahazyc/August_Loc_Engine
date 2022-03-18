@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 
-import { Layout, Typography, Card, Input, Row, Col, List, Space, Avatar } from 'antd';
+import { Layout, Typography, Card, Input, Row, Col, List, Space, Avatar, Button } from 'antd';
 import { EditOutlined, EllipsisOutlined, SettingOutlined, } from '@ant-design/icons';
 
 // import SimpleMap from './components/Map/Map'
 import Head from './components/Header/Head'
-import LocationList from './components/List/List';
+import LocationList from './components/List/LocationList';
 import CurrentLocation from './components/List/CurrentLocation';
 import Map from './components/Map/Map';
 
+const { Search } = Input;
 const { Header, Footer } = Layout;
 const { Title, Link } = Typography;
 const onSearch = value => console.log(value);
@@ -16,6 +17,7 @@ const onSearch = value => console.log(value);
 
 
 export default class App extends React.Component {
+
   constructor(props) {
     super(props);
     var favorites = [];
@@ -26,20 +28,18 @@ export default class App extends React.Component {
 
     this.state = {
       favorites: this.favorites,
-      currentAddress: 'Paris, France',
+      currentAddress: 'Toronto, ON, Canada',
       mapCoordinates: {
-        lat: 48.856614,
-        lng: 2.3522219
-      }
-
-
+        lat: 43.651070,
+        lng: -79.347015
+      },
+      markers: []
     };
   }
 
-
-
+  ///Add List
   toggleFavorite(address) {
-
+    console.log("Working")
     if (this.isAddressInFavorites(address)) {
       this.removeFromFavorites(address);
     }
@@ -50,7 +50,7 @@ export default class App extends React.Component {
 
   addToFavorites(address) {
     var favorites = this.state.favorites;
-
+    
     favorites.push({
       address: address,
       timeStamp: Date.now()
@@ -104,33 +104,10 @@ export default class App extends React.Component {
     return false;
   }
 
-  searchForAddress(address) {
-
-    var google = window.google;
-
-    var self = this;
-
-    let Geocoder = new google.maps.Geocoder();
-
-    Geocoder.geocode({
-      address: address,
-      callback(results, status) {
-
-        if (status !== 'OK') return;
-
-        var latlng = results[0].geometry.location;
-
-        self.setState({
-          currentAddress: results[0].formatted_address,
-          mapCoordinates: {
-            lat: latlng.lat(),
-            lng: latlng.lng()
-          }
-        })
-      }
-
+  cFn(a) {
+    this.setState({
+      currentAddress: String(a)
     })
-
   }
 
   render() {
@@ -147,13 +124,13 @@ export default class App extends React.Component {
                   <EllipsisOutlined key="ellipsis" />,
                 ]}
               >
-                <input
+                <Search
                   id="pac-input"
-                  className="controls searchBar1"
                   type="text"
                   placeholder="Enter a place"
+                  enterButton
                 />
-                {/* <Search onSearch={this.searchForAddress} /> */}
+                <Button id='delete' type="danger">Delete All Markers!</Button>
                 <CurrentLocation address={this.state.currentAddress}
                   favorite={this.isAddressInFavorites(this.state.currentAddress)}
                   onFavoriteToggle={this.toggleFavorite} />
@@ -162,7 +139,7 @@ export default class App extends React.Component {
               </Card>
             </Col>
             <Col span={14}>
-              <Map lat={this.state.mapCoordinates.lat} lng={this.state.mapCoordinates.lng} />
+              <Map cFn={this.cFn.bind(this)} currentAddress={this.state.currentAddress} lat={this.state.mapCoordinates.lat} lng={this.state.mapCoordinates.lng} />
             </Col>
           </Row>
           <Footer></Footer>
