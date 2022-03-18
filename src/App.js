@@ -22,12 +22,9 @@ export default class App extends React.Component {
     super(props);
     var favorites = [];
 
-    if (localStorage.favorites) {
-      favorites = JSON.parse(localStorage.favorites);
-    }
 
     this.state = {
-      favorites: this.favorites,
+      favorites: [],
       currentAddress: 'Toronto, ON, Canada',
       mapCoordinates: {
         lat: 43.651070,
@@ -37,78 +34,30 @@ export default class App extends React.Component {
     };
   }
 
-  ///Add List
-  toggleFavorite(address) {
-    console.log("Working")
-    if (this.isAddressInFavorites(address)) {
-      this.removeFromFavorites(address);
-    }
-    else {
-      this.addToFavorites(address);
-    }
-  }
 
-  addToFavorites(address) {
-    var favorites = this.state.favorites;
-    
-    favorites.push({
-      address: address,
-      timeStamp: Date.now()
-    });
-
-    this.setState({
-      favorites: favorites
-    });
-
-    localStorage.favorites = JSON.stringify(favorites);
-  }
-
-  removeFromFavorites(address) {
-    var favorites = this.state.favorites;
-    var index = -1;
-    if (favorites) {
-      for (var i = 0; i < favorites.length; i++) {
-        if (favorites[i].address == address) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index !== -1) {
-
-        favorites.splice(index, 1);
-
-        this.setState({
-          favorites: favorites
-        });
-
-        localStorage.favorites = JSON.stringify(favorites);
-
-      }
-    }
-  }
-
-  isAddressInFavorites(address) {
-
-    var favorites = this.state.favorites;
-
-    if (favorites) {
-      for (var i = 0; i < favorites.length; i++) {
-
-        if (favorites[i].address == address) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
 
   cFn(a) {
     this.setState({
-      currentAddress: String(a)
+      currentAddress: String(a),
+      markers: []
     })
   }
+
+  deleteAllRecords() {
+    this.setState({
+      favorites: [],
+    })
+    for (var i = 0; i < this.state.marker.length; i++) {
+      this.state.marker[i].setMap(null);
+    }
+  }
+
+  getMarker(marker){
+    this.setState({
+      marker: marker
+    })
+  }
+
 
   render() {
     return (
@@ -130,16 +79,19 @@ export default class App extends React.Component {
                   placeholder="Enter a place"
                   enterButton
                 />
-                <Button id='delete' type="danger">Delete All Markers!</Button>
-                <CurrentLocation address={this.state.currentAddress}
-                  favorite={this.isAddressInFavorites(this.state.currentAddress)}
-                  onFavoriteToggle={this.toggleFavorite} />
-                <LocationList locations={this.state.favorites} activeLocationAddress={this.state.currentAddress}
-                  onClick={this.searchForAddress} />
+                <Button id='delete' type="danger" onClick={this.deleteAllRecords.bind(this)}>Delete Recent Records</Button>
+                <CurrentLocation address={this.state.currentAddress} />
+                <LocationList favorites={this.state.favorites} address={this.state.currentAddress} />
               </Card>
             </Col>
             <Col span={14}>
-              <Map cFn={this.cFn.bind(this)} currentAddress={this.state.currentAddress} lat={this.state.mapCoordinates.lat} lng={this.state.mapCoordinates.lng} />
+              <Map
+                cFn={this.cFn.bind(this)}
+                getMarker={this.getMarker.bind(this)}
+                currentAddress={this.state.currentAddress}
+                lat={this.state.mapCoordinates.lat}
+                lng={this.state.mapCoordinates.lng}
+                markers={this.state.markers} />
             </Col>
           </Row>
           <Footer></Footer>

@@ -84,9 +84,10 @@ export default class Map extends React.Component {
           anchor: new google.maps.Point(17, 34),
           scaledSize: new google.maps.Size(25, 25),
         };
-
+        console.log('marker')
+        console.log(this)
         // Create a marker for each place.
-        markers.push(
+        this.props.markers.push(
           new google.maps.Marker({
             map,
             icon,
@@ -95,10 +96,15 @@ export default class Map extends React.Component {
           })
         );
         
+        this.props.getMarker(this.props.markers)
+
+        
          //pass address to APP
         const currentAddress = places[0].formatted_address
         this.props.cFn(currentAddress)
 
+        ////push location to favorites
+        
         if (place.geometry.viewport) {
           bounds.union(place.geometry.viewport);
         } else {
