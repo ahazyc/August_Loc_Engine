@@ -56,17 +56,9 @@ export default class Map extends React.Component {
     searchBox.addListener("places_changed", () => {
       const places = searchBox.getPlaces();
 
-
-     
-
-
       if (places.length == 0) {
         return;
       }
-
-      // markers.forEach((marker) => {
-      //   marker.setMap(null);
-      // });
 
       // For each place, get the icon, name and location.
       const bounds = new google.maps.LatLngBounds();

@@ -20,12 +20,11 @@ export default class App extends React.Component {
 
   constructor(props) {
     super(props);
-    var favorites = [];
 
 
     this.state = {
       favorites: [],
-      currentAddress: 'Toronto, ON, Canada',
+      currentAddress: '',
       mapCoordinates: {
         lat: 43.651070,
         lng: -79.347015
@@ -38,8 +37,7 @@ export default class App extends React.Component {
 
   cFn(a) {
     this.setState({
-      currentAddress: String(a),
-      markers: []
+      currentAddress: String(a)
     })
   }
 
@@ -57,6 +55,7 @@ export default class App extends React.Component {
     this.setState({
       marker: marker
     })
+    this.state.favorites.pop()
   }
 
 
