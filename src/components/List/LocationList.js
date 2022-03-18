@@ -1,8 +1,6 @@
 import React from 'react';
-import { Typography,  Input, List, Space, Avatar } from 'antd';
-const { Title, Link } = Typography;
-const { Search } = Input;
-const onSearch = value => console.log(value);
+import {List } from 'antd';
+
 
 
 export default class LocationList extends React.Component {
@@ -14,7 +12,7 @@ export default class LocationList extends React.Component {
     return (
       <List>
         <List.Item>Recent Search: </List.Item>
-        {this.props.favorites.map(favorites => <List.Item>{favorites.name}</List.Item>)}
+        {this.props.favorites.map((favorites,index) => <List.Item key={index}>{favorites.name}</List.Item>)}
       </List>
     )
   }

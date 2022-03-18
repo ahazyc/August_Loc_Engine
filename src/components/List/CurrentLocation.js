@@ -4,7 +4,6 @@ import { Card, Input,List, Avatar, Button } from 'antd';
 export default class CurrentLocation extends React.Component {
     
     render() {
-        console.log(this)
         return (
             <Card>
                 <List

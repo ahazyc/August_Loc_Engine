@@ -45,6 +45,7 @@ export default class App extends React.Component {
 
   deleteAllRecords() {
     this.setState({
+      currentAddress:'',
       favorites: [],
     })
     for (var i = 0; i < this.state.marker.length; i++) {

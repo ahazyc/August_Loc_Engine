@@ -84,8 +84,6 @@ export default class Map extends React.Component {
           anchor: new google.maps.Point(17, 34),
           scaledSize: new google.maps.Size(25, 25),
         };
-        console.log('marker')
-        console.log(this)
         // Create a marker for each place.
         this.props.markers.push(
           new google.maps.Marker({
