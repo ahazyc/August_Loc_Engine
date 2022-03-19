@@ -1,18 +1,13 @@
 import React, { Component } from 'react';
 
-import { Layout, Card,Checkbox , Input, Row, Col, Button } from 'antd';
-import { EditOutlined, EllipsisOutlined, SettingOutlined, } from '@ant-design/icons';
+import { Layout, Card, Checkbox, Input, Row, Col, Button,List } from 'antd';
 
-// import SimpleMap from './components/Map/Map'
 import Head from './components/Header/Head'
-import LocationList from './components/List/LocationList';
 import CurrentLocation from './components/List/CurrentLocation';
 import Map from './components/Map/Map';
 const { Search } = Input;
 const { Footer } = Layout;
 const onSearch = value => console.log(value);
-
-
 
 export default class App extends React.Component {
 
@@ -24,9 +19,10 @@ export default class App extends React.Component {
       mapCoordinates: {
         lat: 43.651070,
         lng: -79.347015,
-        lastTimeZone:''
+        lastTimeZone: ''
       },
-      markers: []
+      markers: [],
+      deletedItems: []
     };
   }
 
@@ -42,11 +38,12 @@ export default class App extends React.Component {
       favorites: [],
     })
     for (var i = 0; i < this.state.marker.length; i++) {
+
       this.state.marker[i].setMap(null);
     }
   }
 
-  getMarker(marker){
+  getMarker(marker) {
     this.setState({
       marker: marker
     })
@@ -54,11 +51,44 @@ export default class App extends React.Component {
   }
 
   onChange(e) {
-    console.log(`checked = ${e.target.checked}`);
+    e.target.className = 'seleted'
   }
 
+  handleChange() {
+    console.log('inside CheckBOx')
+    console.log('**************************')
+  }
+
+
+  deleteHandler = () => {
+    let a = document.getElementsByClassName('seleted')
+    console.log('deleted list')
+    console.log(this)
+    let b = this.state.deletedItems
+    while (a[0]) {
+      let listHead = a[0].parentNode
+      b.push(a[0].id)
+      listHead.parentNode.removeChild(listHead)
+      console.log('deleted list')
+      console.log(b)
+      console.log(this)
+    }
+    let deletedItems = this.state.deletedItems
+    for (var i = 0; i < this.state.marker.length; i++) {
+      this.state.marker[[deletedItems[i]]].setMap(null);
+    }
+  }
+
+
   render() {
-    
+
+    if (this.state.currentAddress !== '') {
+      this.state.favorites.push({
+        name: this.state.currentAddress,
+        index: this.state.favorites.length
+      })
+    };
+
     return (
       <>
         <Layout className="layout">
@@ -72,9 +102,25 @@ export default class App extends React.Component {
                   placeholder="Enter a place"
                   enterButton
                 />
-                <Button id='delete' type="danger" onClick={this.deleteAllRecords.bind(this)}>Delete Recent Records</Button>
                 <CurrentLocation address={this.state.currentAddress} />
-                <LocationList favorites={this.state.favorites} address={this.state.currentAddress} />
+                <Card>
+                  <Button id='delete' type="info" onClick={this.deleteHandler.bind(this)}>Delete Selected Records</Button>
+                  <Button id='delete' type="danger" onClick={this.deleteAllRecords.bind(this)}>Delete All Records</Button>
+                  <List
+                    pagination={{
+                      onChange: page => {
+                        console.log(page);
+                      },
+                      pageSize: 10,
+                    }}
+                    dataSource={this.state.favorites}
+                    renderItem={item => (
+                      <List.Item>
+                        <input type='checkbox' onChange={this.onChange} onClick={this.handleChange} id={item.index} /> <label htmlFor={item.index}>{item.name}</label>
+                      </List.Item>
+                    )}
+                  />
+                </Card>
               </Card>
             </Col>
             <Col span={14}>
@@ -94,7 +140,6 @@ export default class App extends React.Component {
     )
   }
 }
-
 
 
 
