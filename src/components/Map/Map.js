@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Descriptions } from 'antd';
 
-import styled from 'styled-components';
-import GoogleMapReact from 'google-map-react';
-
-
-
+var axios = require('axios');
 let GeolocationPosition = null;
 let infowindow = null
 let map = null
@@ -15,7 +11,8 @@ export default class Map extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentAddress: this.currentAddress
+      currentAddress: this.currentAddress,
+      data: this.data
     }
   }
   componentDidMount() {
@@ -49,7 +46,7 @@ export default class Map extends React.Component {
       searchBox.setBounds(map.getBounds());
     });
     let markers = [];
-    
+
     ////
     ////
 
@@ -59,7 +56,6 @@ export default class Map extends React.Component {
       if (places.length == 0) {
         return;
       }
-
       // For each place, get the icon, name and location.
       const bounds = new google.maps.LatLngBounds();
 
@@ -84,27 +80,26 @@ export default class Map extends React.Component {
             title: place.name,
             position: place.geometry.location,
           })
+
         );
-        
+        this.getTime(place)
+
         this.props.getMarker(this.props.markers)
 
-        
-         //pass address to APP
         const currentAddress = places[0].formatted_address
         this.props.cFn(currentAddress)
 
-        ////push location to favorites
-        
+
         if (place.geometry.viewport) {
           bounds.union(place.geometry.viewport);
         } else {
           bounds.extend(place.geometry.location);
         }
-      });
+      }
+      );
       map.fitBounds(bounds);
-      
+
     });
-    
 
     ///////////////////////
     //Show my current
@@ -139,16 +134,50 @@ export default class Map extends React.Component {
         handleLocationError(false, infoWindow, map.getCenter())
       }
     })
-    
+    ///////////////////////
+    //Show my current
   }
 
-  ///////////////////////
-  //Show my current
 
+  ///////////////////////
+  //get Time Zone
+  getTime(place) {
+
+    var currentLat = place.geometry.viewport.wb.h
+    var currentLng = place.geometry.viewport.Sa.h
+    axios.get(`http://api.geonames.org/timezoneJSON?lat=${currentLat}&lng=${currentLng}&username=ahazyc`)
+      .then((response) => {
+        response = response.data
+        this.setState({
+          data: response
+        })
+      })
+      .catch(error => {
+        if (error.response) {
+          console.log(error.reponse.status)
+        } else {
+          console.log(error.message)
+        }
+      })
+  }
+  ///////////////////////
+  //get Time Zone
 
   render() {
+
+    let localTime = null
+    let timeZone = null
+    if (this.state.data) {
+
+      localTime = this.state.data.time
+      timeZone = this.state.data.timezoneId
+    }
     return (
       <div className='map-holder'>
+        <Descriptions title="Location info">
+          <Descriptions.Item label="Local Time">{localTime}</Descriptions.Item>
+          <Descriptions.Item label="Time Zone">{timeZone}</Descriptions.Item>
+        </Descriptions>
         <div id='map'></div>
       </div>
     )

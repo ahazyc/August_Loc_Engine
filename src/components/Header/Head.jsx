@@ -1,9 +1,7 @@
 // import '.../index.css';
-import { Layout, Typography, Card, Input, Row, Col, List, Space, Avatar } from 'antd';
-import { EditOutlined, EllipsisOutlined, SettingOutlined, MessageOutlined, LikeOutlined, StarOutlined } from '@ant-design/icons';
-const {Header, Content, Footer } = Layout;
-const { Title, Link } = Typography;
-const { Search } = Input;
+import { Layout, Typography, Input, Row, Col} from 'antd';
+
+const {Header} = Layout;
 const onSearch = value => console.log(value);
 
 const Head = () => {
@@ -14,9 +12,7 @@ const Head = () => {
                     <h1 className='headerBand'>
                         August Location Engine
                     </h1>
-                </Col>
-                
-
+                </Col>                
             </Row>
         </Header>
     )

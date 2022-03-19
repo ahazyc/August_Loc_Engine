@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Input,List, Avatar, Button } from 'antd';
+import { Card, List} from 'antd';
 
 export default class CurrentLocation extends React.Component {
     
